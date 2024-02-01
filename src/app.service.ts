@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import { Issuer } from 'openid-client';
+import { BaseClient, Issuer } from 'openid-client';
 
 @Injectable()
 export class AppService {
@@ -8,7 +8,7 @@ export class AppService {
     return randomUUID();
   }
 
-  async createClient() {
+  async createClient(): Promise<BaseClient> {
     const agentConnectIssuer = await Issuer.discover(
       process.env.AUTHORIZATION_SERVER_URL,
     );
@@ -20,6 +20,7 @@ export class AppService {
       response_types: ['code'],
       claims: '{"id_token":{"amr":{"essential":true}}}',
       acr_values: 'eidas1',
+      id_token_signed_response_alg: 'ES256',
     });
   }
 }

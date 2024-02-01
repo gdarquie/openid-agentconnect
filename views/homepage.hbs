@@ -31,7 +31,7 @@
         {{ message }}
       <form action="{{url}}">
         <input type="hidden" name="scope" value="openid uid given_name usual_name email siren siret organizational_unit belonging_population phone+chorusdt idp_id idp_acr" />
-        <input type="hidden" name="claims" value='{"id_token":{"amr":{"essential":true}}}'' />
+        <input type="hidden" name="claims" value='{"id_token":{"amr":{"essential":true}}}' />
         <input type="hidden" name="prompt" value="{{prompt}}" />
         <input type="hidden" name="client_id" value="{{client_id}}" />
         <input type="hidden" name="redirect_uri" value="{{redirect_uris}}" />

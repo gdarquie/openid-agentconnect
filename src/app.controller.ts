@@ -1,13 +1,21 @@
-import { Controller, Get, Render, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Redirect,
+  Render,
+  Req,
+  Res,
+  Session,
+} from '@nestjs/common';
 import { AppService } from './app.service';
-import { Issuer } from 'openid-client';
+import { BaseClient, Issuer } from 'openid-client';
 import { Request } from 'express';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  private client: any;
+  private client: BaseClient;
   private nonce: string;
   private state: string;
 
@@ -48,13 +56,12 @@ export class AppController {
   }
 
   @Get('oidc-callback')
-  async callback(@Req() req: Request) {
+  @Redirect('success', 301)
+  async callback(@Session() session: Record<string, any>, @Req() req: Request) {
     const params = this.client.callbackParams(req);
 
-    console.log('params', params);
-
     const tokenSet = await this.client.callback(
-      `${process.env.APP_URL}/success`,
+      `${process.env.APP_URL}/oidc-callback`,
       params,
       {
         state: this.state,
@@ -62,13 +69,23 @@ export class AppController {
       },
     );
 
+    // set session
+    session.tokenSet = tokenSet;
+
     console.log('received and validated tokens %j', tokenSet);
-    console.log('validated ID Token claims %j', tokenSet.claims());
-    console.log('Return from callback');
+
+    // todo: complete with a call to userinfo endpoint
+    // const userinfoResponse = await this.client.userinfo(tokenSet);
+    // console.log('userinfo %j', userinfoResponse);
   }
 
   @Get('success')
-  async success(@Req() req: Request) {
-    console.log('Return from callback');
+  @Render('success')
+  async success(@Session() session: Record<string, any>) {
+    console.log('session %j', session);
+    return {
+      accessToken: session.tokenSet.access_token,
+      idToken: session.tokenSet.id_token,
+    };
   }
 }
