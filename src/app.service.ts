@@ -21,6 +21,7 @@ export class AppService {
       claims: '{"id_token":{"amr":{"essential":true}}}',
       acr_values: 'eidas1',
       id_token_signed_response_alg: 'ES256',
+      userinfo_signed_response_alg: 'ES256',
     });
   }
 }

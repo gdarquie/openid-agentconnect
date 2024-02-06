@@ -15,9 +15,18 @@
   <body>
     <main class="container">
       <h2>My OIDC Client: a service provider using AgentConnect</h2>
+
+      <section>
       <p>You're successfully connected with AgentConnect.</p>
-      <p>Acess token: {{ accessToken }}</p>
+      <p>Acess token: {{{ accessToken }}}</p>
       <p>Id token: {{ idToken }}</p>
+      <p>User info: {{ userInfo }}</p>
+      </section>
+
+
+      <section>
+        <a href="/logout">Logout</a>
+      </section>
     </main>
   </body>
 </html>

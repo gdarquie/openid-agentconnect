@@ -4,7 +4,6 @@ import {
   Redirect,
   Render,
   Req,
-  Res,
   Session,
 } from '@nestjs/common';
 import { AppService } from './app.service';
@@ -71,21 +70,25 @@ export class AppController {
 
     // set session
     session.tokenSet = tokenSet;
+    session.userInfo = await this.client.userinfo(tokenSet);
+  }
 
-    console.log('received and validated tokens %j', tokenSet);
-
-    // todo: complete with a call to userinfo endpoint
-    // const userinfoResponse = await this.client.userinfo(tokenSet);
-    // console.log('userinfo %j', userinfoResponse);
+  @Get('logout')
+  @Redirect('/', 301)
+  async logout(@Session() session: Record<string, any>, @Req() req: Request) {
+    console.log('session', req.session);
+    this.client.endSessionUrl();
+    await session.destroy();
+    console.log('after destroy', req.session);
   }
 
   @Get('success')
   @Render('success')
   async success(@Session() session: Record<string, any>) {
-    console.log('session %j', session);
     return {
-      accessToken: session.tokenSet.access_token,
+      userInfo: JSON.stringify(session.userInfo),
       idToken: session.tokenSet.id_token,
+      accessToken: session.tokenSet.access_token,
     };
   }
 }
