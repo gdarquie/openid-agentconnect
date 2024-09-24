@@ -1,34 +1,29 @@
-<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8" />
+    <meta charset='utf-8' />
     <title>App</title>
     <style>
-      .container {
-        width: 600px;
-        overflow-wrap: break-word;;
-        margin: auto;
-        text-align: center;
-      }
+      .container { width: 600px; overflow-wrap: break-word;; margin: auto;
+      text-align: center; }
     </style>
   </head>
   <body>
-    <main class="container">
+    <main class='container'>
       <h2>My OIDC Client: a service provider using AgentConnect</h2>
 
       <section>
-      <p>You're successfully connected with AgentConnect.</p>
-      <p>Acess token: {{{ accessToken }}}</p>
-      <p>Id token: {{ idToken }}</p>
-      <p>User info: {{ userInfo }}</p>
+        <p>You're successfully connected with AgentConnect.</p>
+        <p>Acess token: {{{accessToken}}}</p>
+        <p>Id token: {{idToken}}</p>
+        <p>User info: {{userInfo}}</p>
       </section>
-
 
       <section>
-        <a href="/logout">Logout</a>
+        <a href='/logout'>Logout</a>
       </section>
+
+      <iframe src='http://localhost:3000' width='100%' height='400px'></iframe>
+
     </main>
   </body>
 </html>
-
-

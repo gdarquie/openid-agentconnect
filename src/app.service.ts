@@ -16,7 +16,7 @@ export class AppService {
     return new agentConnectIssuer.Client({
       client_id: process.env.CLIENT_ID,
       client_secret: process.env.CLIENT_SECRET,
-      redirect_uris: [`${process.env['APP_URL']}/oidc-callback`],
+      redirect_uris: [`${process.env['APP_URL']}/login-callback`],
       response_types: ['code'],
       claims: '{"id_token":{"amr":{"essential":true}}}',
       acr_values: 'eidas1',

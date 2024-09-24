@@ -4,11 +4,12 @@ import {
   Redirect,
   Render,
   Req,
+  Res,
   Session,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { BaseClient, Issuer } from 'openid-client';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 
 @Controller()
 export class AppController {
@@ -20,7 +21,12 @@ export class AppController {
 
   @Get('/')
   @Render('homepage')
-  async try() {
+  async try(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    res.cookie('shinsenCookie', 'this a custom cookie from platform');
+    res.cookie('signedshinsenCookie', 'this a custom cookie from platform', {
+      signed: true,
+    });
+    console.log('cookies are', req.cookies);
     this.nonce = this.appService.generateCode();
     this.state = this.appService.generateCode();
     this.client = await this.appService.createClient();
@@ -39,6 +45,7 @@ export class AppController {
       nonce: this.nonce,
       state: this.state,
       acr: 'eidas1',
+      myCookie: req.cookies.shinsenCookie,
     };
   }
 
@@ -54,13 +61,14 @@ export class AppController {
     };
   }
 
-  @Get('oidc-callback')
+  @Get('login-callback')
   @Redirect('success', 301)
   async callback(@Session() session: Record<string, any>, @Req() req: Request) {
     const params = this.client.callbackParams(req);
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
     const tokenSet = await this.client.callback(
-      `${process.env.APP_URL}/oidc-callback`,
+      `${process.env.APP_URL}/login-callback`,
       params,
       {
         state: this.state,
